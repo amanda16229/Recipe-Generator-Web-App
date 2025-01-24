@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1> Recipe Generator </h1>
+        <form method ="POST" action="/">
+            <input type="text" name="search_query" placeholder="Search for recipes: ">
+            <input type = "submit" value="Search">
+        </form>
+
+        { % if recipes % }
+        <h2> Results for "{{ search_query }}"</h2>
+        <ul>
+            { % for recipe in recipes % }
+            <li>
+                <h3 class = "recipe-title">{{ recipe.title }} </h3>
+                { % if recipe.image % }
+                <img src=""
+            </li>
+        </ul>
+    </body>
