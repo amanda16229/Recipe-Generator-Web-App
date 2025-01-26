@@ -7,14 +7,21 @@
             <input type = "submit" value="Search">
         </form>
 
-        { % if recipes % }
+        {% if recipes %}
         <h2> Results for "{{ search_query }}"</h2>
         <ul>
-            { % for recipe in recipes % }
+            {% for recipe in recipes %}
             <li>
-                <h3 class = "recipe-title">{{ recipe.title }} </h3>
-                { % if recipe.image % }
-                <img src=""
+                <h3 class="recipe-title">{{ recipe.title }}</h3>
+                {% if recipe.image %}
+                <img src="{{ recipe.image }}" alt="{{ recipe.title }}">
+                {% endif %}
+                <a href="{{ url_for('view_recipe', recipe_id=recipe.id, search_query=search_query) }}">View</a>
             </li>
+            {% endfor %}
         </ul>
+        {% else %}
+        <p> No recipes found.</p>
+        {% endif %}
     </body>
+</html>

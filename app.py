@@ -1,6 +1,8 @@
-from urllib.parse import unquote
 from flask import Flask, render_template, request
-# import requests  makes a call & its checked w/ help of status code that whether our request was successful or not
+import requests
+from urllib.parse import unquote
+
+# import requests makes a call & its checked w/ help of status code that whether our request was successful or not
 
 # API_URL = 'https://api.spoonacular.com'
 
@@ -9,22 +11,26 @@ app = Flask(__name__) # main app instance
 
 API_KEY = '123'
 
-@app.route('/', methods=["POST", "GET"]) 
-def search():
+
+@app.route('/', methods=["GET", "POST"]) 
+
+# function handles user searches and displays a list of recipes including their images based on user input
+def index():
     # since we're searching for recipes, POST and GET requests need to be handled
     # if user submits a recipe search, activate POST method
+
     if request.method == "POST": # server request
         query = request.form.get('search_query', '')
         recipes = search_recipes(query)
-        return render_template("index.html", recipes=recipes, search_query = query)
+        return render_template("index.html", recipes=recipes, search_query=query)
     
     else: # if no search submitted, still need to handle this possibility, rendering page w.out searches
         search_query = request.args.get('search_query', '')
         decoded_search_query = unquote(search_query)
         recipes = search_recipes(decoded_search_query)
-        return render_template("index.html", recipes)
+        return render_template("index.html", recipes=recipes, search_query=decoded_search_query)
 
-
+# function that searches the API for recipes
 def search_recipes(query):
     url = f'https://api.spoonacular.com/recipes/complexSearch'
     params = {
@@ -36,30 +42,29 @@ def search_recipes(query):
         'fillIngredients': True,
     }
 
-    # Send a GET request to the Spoonacular API with the query parameters
-    response = request.get(url, params=params)
+    # Send a GET request to the API with the query parameters
+    response = requests.get(url, params=params)
     if response.status_code == 200: # server response
+        #converts the JSON response from the API into a list
         data = response.json()
         return data['results']
     else:
         return []
 
-# displays list of recipes on this page
+        
+# takes usr to page for single recipe's info
 @app.route('/recipe/<int:recipe_id>')
 def view_recipe(recipe_id):
     search_query = request.args.get('search_query', '')
-    render_template("view_recipe.html")
 
-    # API request for single recipe's info
     url = f'https://api.spoonacular.com/recipes/{recipe_id}/information'
     params = {
-        'apiKey': API_KEY
+        'apiKey': API_KEY,
     }
 
-    response = request.get(url, params=params)
+    response = requests.get(url, params=params)
     if response.status_code == 200: # server response
         recipe = response.json()
-        # takes usr to page for single recipe info
         return render_template("view_recipe.html", recipe=recipe, search_query=search_query)
     else:
         return "Recipe not found", 404
