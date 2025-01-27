@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ recipe.title }}</title>
+        <style>
+            body {
+                text-align: center;
+                margin: 40px;
+                font-family: Arial, Arial, Helvetica, sans-serif;
+            }
+
+            ul, ol {
+                text-align: left;
+                list-style-position: inside;
+            }
+
+            img {
+                display: block;
+                margin: 0 auto;
+                max-width: 300px;
+                margin-bottom: 20px;
+            }
+
+            a {
+                display: inline-block;
+                margin-top: 10px;
+                color: blue;
+                text-decoration: underline;
+                padding: 20px;
+            }
+
+            .recipe-details {
+                max-width: 700px;
+                margin: 0 auto;
+                border: 2px solid #ccc;
+                padding: 20px;
+            }
+
+            .section-title {
+                text-align: left;
+            }
+
+            .ingredient-list, .instruction-list {
+                text-align: left;
+                padding-left: 20px;
+                line-height: 1.6;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="recipe-details">
+            <h1>{{ recipe.title }}</h1>
+
+            {% if recipe.image %}
+            <img src="{{ recipe.image }}" alt="{{ recipe.title }}">
+            {% endif %}
+
+            <h2 class="section-title">Ingredients</h2>
+            
+            <ul class="ingredient-list">
+
+                {% for ingredient in recipe.extendedIngredients %}
+                <li>{{ ingredient.original }}</li>
+                {% endfor %}
+            </ul>
+
+            <h2 class="section-title">Instructions</h2>
+            <ol class="instruction-list">
+                {% for step in recipe.analyzedInstructions[0].steps %}
+                <li>{{ step.step }}</li>
+                {% endfor %}
+            </ol>
+            
+            <a href="/?search_query={{ search_query }}">Back to search results</a>
+        </div>
+    </body>
+</html>

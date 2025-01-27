@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import requests
 from urllib.parse import unquote
 
@@ -10,6 +10,11 @@ from urllib.parse import unquote
 app = Flask(__name__) # main app instance
 
 API_KEY = '123'
+
+
+@app.route("/favicon.ico")
+def favicon():
+        return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/', methods=["GET", "POST"]) 
